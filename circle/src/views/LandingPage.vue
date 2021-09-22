@@ -3,11 +3,6 @@
         <div class="header-container">
             <nav id="nav-bar" class="nav-bar">
                 <h2 class="logo">Circle</h2>
-                <ul>
-                    <!-- <li><a href="index.html" class="current">HOME</a></li>
-                    <li><a href="#about">ABOUT</a></li>
-                    <li><a href="#contact">CONTACT</a></li> -->
-                </ul>
             </nav>
             <div class="header-content">
                 <h2>Create your own <span>Circle</span></h2>
@@ -17,7 +12,7 @@
             <div id="modal" class="modal">
                 <div id="container" class="container">
                     <div class="form-container sign-in-container">
-                        <form id="signInForm">
+                        <form id="signInForm" @submit.prevent="submitLogin">
                             <h1 class="center">Sign in</h1>
                                 <div class="social-container center">
                                     <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -26,18 +21,17 @@
                                 </div>
                                 <span class="center">or use your account</span>
                                 <div class="form-input">
-                                    <input type="email" placeholder="Email" id="signInEmail"/>
+                                    <input v-model="usernameLogin" type="text" placeholder="Username" id="signInEmail"/>
                                     <div class="password-box">
-                                        <input type="password" placeholder="Password" id="password1" />
+                                        <input v-model="passwordLogin" type="password" placeholder="Password" id="password1" />
                                         <i class="far fa-eye" id="togglePassword"></i>
                                     </div>
                                 </div>
                                 <button id="btn-fill">Sign In</button>
-                                <a href="#" class="center">Forgot your password?</a>
                         </form>
                     </div>
                     <div class="form-container sign-up-container">
-                        <form>
+                        <form @submit.prevent="submitRegister">
                             <h1 class="center">Create an Account</h1>
                             <div class="social-container center">
                                 <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -46,27 +40,20 @@
                             </div>
                             <span class="center">It's fast and free</span>
                             <div class="name">  
-                                <input type="text" placeholder="First Name" id="signUpFirstName">
-                                <input type="text" placeholder="Last Name" id="signUpLastName">
+                                <input type="text" v-model="fullNameRegister" placeholder="Full Name" id="signUpFirstName">
                             </div>
                             
                             <div class="other">
-                                <input type="email" placeholder="Email or Phone Number" id="signUpEmail">
+                                <input v-model="usernameRegister" type="text" placeholder="Username" id="signUpEmail">
+                                <input v-model="locationRegister" type="text" placeholder="Location" id="signUpEmail">
+
                                 <div class="password-box">
-                                    <input type="password" placeholder="Password" id="password2"/>
+                                    <input v-model="passwordRegister" type="password" placeholder="Password" id="password2"/>
                                     <i class="far fa-eye" id="togglePassword2"></i>
-                                </div>
+                                </div>  
                                 
                             </div>
-                                <!-- <h3>Gender</h3>
-                            <div class="gender center">
-                                <input type="radio" id="male" name="gender" value="male" class="gender">
-                                <label for="male">Male</label>
-                                <input type="radio" id="female" name="gender" value="female" class="gender">
-                                <label for="female">Female</label>
-                                <input type="radio" id="other" name="gender" value="other" class="gender">
-                                <label for="other">Other</label>
-                            </div> -->
+
                             <span class="text">By clicking Sign Up, you agree to our  <a href="#"> Terms</a> and <a href="#"> Conditions</a></span>
                             <button id="btn-fill">Sign Up</button>
                         </form>
@@ -93,9 +80,55 @@
 <script>
 export default {
     name: "LandingPage",
+    data(){
+      return {
+        usernameLogin: '',
+        passwordLogin: '',
+        fullNameRegister: '',
+        usernameRegister: '',
+        locationRegister: '',
+        passwordRegister: ''
+      }
+    },
+    methods: {
+      submitRegister(){
+        const payload = {
+          fullName : this.fullNameRegister,
+          username: this.usernameRegister,
+          location: this.locationRegister,
+          password: this.passwordRegister
+        }
+        this.$store.dispatch("submitRegister",payload)
+        .then(()=> {
+          this.fullNameRegister= "";
+          this.usernameRegister= "";
+          this.locationRegister= "";
+          this.passwordRegister= "";
+        })
+        .catch((err)=> {
+          console.log(err.response);
+        })
+      },
+      submitLogin(){
+        const payload = {
+          username: this.usernameLogin,
+          password: this.passwordLogin
+        }
+        this.$store.dispatch('submitLogin',payload)
+        .then(({data})=> {
+        localStorage.setItem("access_token", data.access_token)
+        localStorage.setItem("fullName", data.fullName)
+        localStorage.setItem("username", data.username)
+        localStorage.setItem("location", data.location)
+        this.$router.push('/')
+        })
+        .catch((err)=> {
+          console.log(err.response);
+        })
+      }
+    },
     mounted(){
         // modal
-
         const modal = document.querySelector('#modal');
         const modalBtn = document.querySelector('#btn-modal')
         const signUpButton = document.querySelector('#signUp');
@@ -105,13 +138,15 @@ export default {
         const togglePassword2 = document.querySelector('#togglePassword2');
         const password = document.querySelector('#password1');
         const password2 = document.querySelector('#password2');
-
-
+        const btnSignUp = document.querySelector('#btn-fill')
         modalBtn.addEventListener('click', openModal);
 
         function openModal(){
             modal.style.display = 'block'
         }
+        btnSignUp.addEventListener('click',()=> {
+          container.classList.add('right-panel-active');
+        })
         signInButton.addEventListener('click', function() {
 	    container.classList.add('right-panel-active');
         });
@@ -148,7 +183,7 @@ export default {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 
 @import url('https://fonts.googleapis.com/css2?family=Dosis&family=Pacifico&display=swap');
