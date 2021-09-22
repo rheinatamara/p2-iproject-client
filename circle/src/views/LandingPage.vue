@@ -37,7 +37,7 @@
                         </form>
                     </div>
                     <div class="form-container sign-up-container">
-                        <form id="form" action="/dist/page.html">
+                        <form>
                             <h1 class="center">Create an Account</h1>
                             <div class="social-container center">
                                 <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -93,6 +93,51 @@
 <script>
 export default {
     name: "LandingPage",
+    mounted(){
+        // modal
+
+        const modal = document.querySelector('#modal');
+        const modalBtn = document.querySelector('#btn-modal')
+        const signUpButton = document.querySelector('#signUp');
+        const signInButton = document.querySelector('#signIn');
+        const container = document.querySelector('#container');
+        const togglePassword = document.querySelector('#togglePassword');
+        const togglePassword2 = document.querySelector('#togglePassword2');
+        const password = document.querySelector('#password1');
+        const password2 = document.querySelector('#password2');
+
+
+        modalBtn.addEventListener('click', openModal);
+
+        function openModal(){
+            modal.style.display = 'block'
+        }
+        signInButton.addEventListener('click', function() {
+	    container.classList.add('right-panel-active');
+        });
+        signUpButton.addEventListener('click', function() {
+            container.classList.remove('right-panel-active');
+        });
+        window.addEventListener('click', clickOutside);
+            function clickOutside(e) {
+            if (e.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        togglePassword.addEventListener('click', function() {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+        });
+
+        togglePassword2.addEventListener('click', function() {
+            const type = password2.getAttribute('type') === 'password' ? 'text' : 'password';
+            password2.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+
+
+    }
 
 }
 
@@ -270,7 +315,6 @@ body {
 		.container {
 			position: relative;
 			background-color: #fff;
-			// border-radius: $main-border-radius;
 			margin: 10% auto;
 			width: 800px;
 			max-width: 100%;
