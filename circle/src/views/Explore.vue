@@ -1,10 +1,15 @@
 <template>
-  <h1>Explore</h1>
+  <Navbar></Navbar>
 </template>
 
 <script>
+import Navbar from '../components/Navbar.vue'
+
 export default {
-    name: "Explore"
+    name: "Explore",
+    components: {
+      Navbar
+    }
 }
 </script>
 

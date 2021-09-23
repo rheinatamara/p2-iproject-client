@@ -1,10 +1,16 @@
 <template>
-  <h1>Search</h1>
+  <Navbar></Navbar>
 </template>
 
 <script>
+import Navbar from '../components/Navbar.vue'
+
 export default {
-    name: "Search"
+    name: "Search",
+    components: {
+        Navbar
+    }
+    
 }
 </script>
 

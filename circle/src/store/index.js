@@ -11,6 +11,7 @@ export default new Vuex.Store({
     default_picture: "",
     default_background: "",
     hasPicture: false,
+    detailPost: [],
   },
   mutations: {
     SET_MYPROFILE(state, payload) {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     SET_HASPICTURE(state, payload) {
       state.hasPicture = payload;
     },
+    SET_DETAILPAGE(state, payload) {
+      state.detailPost = payload;
+    },
   },
   actions: {
     submitLogin(context, payload) {
@@ -32,6 +36,11 @@ export default new Vuex.Store({
     },
     fetchProfile() {
       return axios.get(`${baseUrl}/myProfile`, {
+        headers: { access_token: localStorage.getItem("access_token") },
+      });
+    },
+    fetchById(context, payload) {
+      return axios.get(`${baseUrl}/posts/${payload}`, {
         headers: { access_token: localStorage.getItem("access_token") },
       });
     },

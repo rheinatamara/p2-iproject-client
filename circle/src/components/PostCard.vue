@@ -1,22 +1,41 @@
 <template>
  
     <div class="post-container">
-        <router-link to="/">
-            <div class="post"><a href=""><img :src="post.image_url" alt=""></a>
+        <a @click.prevent="detail(post.id)" href="#">
+        <div class="post"><a href=""><img :src="post.image_url" alt=""></a>
             <div class="emoji-container">
                 <a href="#" class="emoji"><i class="fa fa-heart"> {{post.favourites_count}}</i></a>
 
             </div>
         </div>
-        </router-link>
-
+        </a>
     </div>
 </template>
 
 <script>
 export default {
     name:"PostCard",
-    props: ["post"]
+    props: ["post"],
+    methods : {
+        detail(id){
+            this.$store.dispatch("fetchById", id)
+            .then(({data})=> {
+                console.log(data);
+                this.$store.commit("SET_DETAILPAGE", data)
+                this.$router.push({
+                name: 'Detail',
+                params: {
+                    id: id
+                }
+            })
+            
+            })
+            .catch((err)=> {
+                console.log(err);
+            })
+        }
+        
+    }
 }
 </script>
 

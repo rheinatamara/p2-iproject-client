@@ -4,7 +4,7 @@
         <div class="header-background">
             <div class="header-container">
                 <nav id="nav-bar" class="nav-bar">
-                    <h2 class="logo"><a href="">Circle</a></h2>
+                    <h2 class="logo"><a @click.prevent="logo" href="">Circle</a></h2>
                     <ul>
                         <li><a @click.prevent="profiles" href=""><i class="fas fa-th-large"></i></a></li>
                         <li><a href="#"><i class="far fa-paper-plane"></i></a></li>
@@ -109,6 +109,9 @@ export default {
 	  },
 	  search(){
 		  this.$router.push('/search')
+	  },
+	  logo(){
+		  this.$router.push('/')
 	  }
     },
 	components: {
