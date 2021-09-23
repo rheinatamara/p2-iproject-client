@@ -12,6 +12,8 @@ export default new Vuex.Store({
     default_background: "",
     hasPicture: false,
     detailPost: [],
+    allData: [],
+    userHasPicture: false,
   },
   mutations: {
     SET_MYPROFILE(state, payload) {
@@ -25,6 +27,12 @@ export default new Vuex.Store({
     },
     SET_DETAILPAGE(state, payload) {
       state.detailPost = payload;
+    },
+    SET_ALLDATA(state, payload) {
+      state.allData = payload;
+    },
+    SET_USEREHASPICTURE(state, payload) {
+      state.userHasPicture = payload;
     },
   },
   actions: {
@@ -41,6 +49,23 @@ export default new Vuex.Store({
     },
     fetchById(context, payload) {
       return axios.get(`${baseUrl}/posts/${payload}`, {
+        headers: { access_token: localStorage.getItem("access_token") },
+      });
+    },
+    fetchExplore() {
+      return axios.get(`${baseUrl}/posts`, {
+        headers: { access_token: localStorage.getItem("access_token") },
+      });
+    },
+    addPost(context, payload) {
+      const form = new FormData();
+      form.append("text", payload.text);
+
+      form.append("image_url", payload.image_url);
+      axios.post(`${baseUrl}/posts`, form, {
+        headers: { access_token: localStorage.getItem("access_token") },
+      });
+      return axios.post(`${baseUrl}/posts`, payload, {
         headers: { access_token: localStorage.getItem("access_token") },
       });
     },

@@ -4,17 +4,21 @@
         <div class="post">
             <div class="container">
                 <div class="user">
-                <img :src="detail.Profile.profile_image_url" alt="">
+                <img v-if="hasPicture" :src="detail.Profile.profile_image_url" alt="">
+                <img v-if="!hasPicture" src="../assets/blank-profile.jpg" alt="">
                 <p>{{detail.Profile.User.username}}</p>
             </div>
             <div class="image-post">
                 <img :src="detail.image_url" alt="">
+  
+            </div>
+            <div class="comment">
+                <i class="far fa-heart"> {{detail.favourites_count}}</i>
+                <p>
+                    {{detail.text}}
+                </p>
             </div>
             
-            <i class="far fa-heart"> {{detail.favourites_count}}</i>
-            <p>
-                {{detail.text}}
-            </p>
             </div>
             
         </div>
@@ -32,7 +36,10 @@ export default {
     computed: {
         detail(){
             return this.$store.state.detailPost
-        }
+        },
+        hasPicture(){
+		  	return this.$store.state.hasPicture
+	    }
     }
 }
 </script>
@@ -46,7 +53,8 @@ export default {
 
 }
     .user {
-        margin-bottom: 10px;
+        padding-left: 1rem;
+        margin-bottom: 15px;
         display: flex;
         align-items: center;
         justify-content: start;
@@ -58,7 +66,11 @@ export default {
 
         }
     }
+    .comment {
+        padding-left: 1rem;
+    }
     .image-post {
+
         img {
             border-radius: 20px;
         }
