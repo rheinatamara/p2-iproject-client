@@ -2,6 +2,9 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import LandingPage from "../views/LandingPage.vue";
 import MainProfile from "../views/MainProfile.vue";
+import Explore from "../views/Explore.vue";
+import EditProfile from "../components/EditProfile.vue";
+import Search from "../views/Search.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -15,6 +18,21 @@ const routes = [
     name: "MainProfile",
     component: MainProfile,
   },
+  {
+    path: "/explore",
+    name: "Explore",
+    component: Explore,
+  },
+  {
+    path: "/edit",
+    name: "EditProfile",
+    component: EditProfile,
+  },
+  {
+    path: "/search",
+    name: "Search",
+    component: Search,
+  },
 ];
 
 const router = new VueRouter({
@@ -23,7 +41,6 @@ const router = new VueRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  console.log(to);
   if (to.name === "LandingPage" && localStorage.getItem("access_token")) {
     next({ name: "MainProfile" });
   } else if (

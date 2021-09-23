@@ -6,11 +6,12 @@
                 <nav id="nav-bar" class="nav-bar">
                     <h2 class="logo"><a href="">Circle</a></h2>
                     <ul>
-                        <li><a href=""><i class="fas fa-th-large"></i></a></li>
+                        <li><a @click.prevent="profiles" href=""><i class="fas fa-th-large"></i></a></li>
                         <li><a href="#"><i class="far fa-paper-plane"></i></a></li>
-                        <li><a href="#"><i class="fas fa-search"></i></a></li>
-                        <li><a href="#"><i class="fas fa-sign-out-alt"></i></a></li>
-                        <li><a href="" class="current"><img src="../assets/rheina.jpeg" alt=""></a></li>
+                        <li @click.prevent="search" ><a href="#"><i class="fas fa-search"></i></a></li>
+                        <li @click.prevent="logOut" ><a href="#"><i class="fas fa-sign-out-alt"></i></a></li>
+                        <li @click.prevent="mainProfile" ><a href="" class="current"><img v-if="hasPicture" :src="profile.profile_image_url" alt="">
+                        <img v-if="!hasPicture" src="../assets/blank-profile.jpg" alt=""></a></li>
                     </ul>
                 </nav>
             </div>
@@ -19,47 +20,40 @@
             <div class="profile item1">
                 <div class="profile-1">
                     <div class="profilepic">
-                        <img src="../assets/rheina.jpeg" alt="">
+                        <img v-if="hasPicture" :src="profile.profile_image_url" alt="">
+                        <img v-if="!hasPicture" src="../assets/blank-profile.jpg" alt="">
                     </div>
                     <div class="profile-name">
                         <div class="button-flex">
                             <div class="flex">
                                 <div>
-                                    <span class="name">Rheina Tamara, <span id="age">19</span></span>
+                                    <span class="name">{{profile.User.fullName}}</span>
                                 </div>
                                 
                             </div>
                             <div class="button">
-                                <a href="#" class="button "><i class="fas fa-cog"></i> Edit Profile</a>
+                                <a @click.prevent="edit" href="#" class="button "><i class="fas fa-cog"></i> Edit Profile</a>
                             </div>
                         </div>
-                        <p class="id">@warmstares</p>
+                        <p class="id">@{{profile.User.username}}</p>
                         <div class="location">
                             <i class="fas fa-map-marker-alt"></i>
-                            <p class="id flag"> Bekasi, Indonesia</p>
+                            <p class="id flag">{{profile.User.location}}</p>
                         </div>
                     </div>
                 </div>
                 <div class="bio">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam praesentium illo voluptas officia exercitationem officiis ipsum iure nulla aliquam quidem?</p>
-                    <p class="date"><i class="far fa-calendar-alt"></i> Joined December 2020</p>
+                    <p>{{profile.description}}</p>
                 </div>
                 <div class="post-status">
                     <ul>
                         <li><a href="" class="current"><i class="fas fa-th"></i> POSTS</a></li>
-                        <li><a href=""><i class="fas fa-comment-dots"></i> STATUS</a></li>
                     </ul>
                 </div>
                 <div class="grid">
                     <div class="grid-container">
-                        <div class="post-container">
-                            <div class="post"><a href=""><img src="" alt=""></a>
-                                <div class="emoji-container">
-                                    <a href="#" class="emoji"><i class="fa fa-heart"> 999</i></a>
-                                    <a href="#" class="emoji"><i class="fas fa-comment"> 999</i></a>
-                                </div>
-                            </div>
-                        </div>
+
+							<PostCard v-for="post in profile.Posts" :key="post.id" :post="post"></PostCard>
                     </div>
                 </div>
             </div>
@@ -69,11 +63,59 @@
 </template>
 
 <script>
+import PostCard from '../components/PostCard.vue'
+
 export default {
-    name: "MainProfile"
+    name: "MainProfile",
+    computed:{
+      profile(){
+        return this.$store.state.myProfile
+      },
+	  profilePicture(){
+		  return this.$store.state.default_picture
+	  },
+	  hasPicture(){
+		  	return this.$store.state.hasPicture
+
+	  }
+    },
+    created(){
+      this.$store.dispatch('fetchProfile')
+      .then(({data})=>{
+        this.$store.commit("SET_MYPROFILE",data)
+		if(data.profile_image_url){
+		this.$store.commit("SET_HASPICTURE", true)
+		} else{
+			this.$store.commit("SET_HASPICTURE", false)
+		}
+      })
+      .catch((err)=> {
+        console.log(err);
+      })
+    },
+    methods: {
+      logOut() {
+        localStorage.clear()
+        this.$router.push('/login-register')
+      },
+	  profiles(){
+		  this.$router.push('/explore')
+	  },
+	  mainProfile(){
+		  this.$router.push('/')
+	  },
+	  edit(){
+		  this.$router.push("/edit")
+	  },
+	  search(){
+		  this.$router.push('/search')
+	  }
+    },
+	components: {
+		PostCard
+	}
 }
 </script>
-
 <style lang="scss" scoped>
   @import url('https://fonts.googleapis.com/css2?family=Dosis&family=Pacifico&display=swap');
   $main-color: #f89c4b;
@@ -91,7 +133,6 @@ export default {
     border: none;
     font-family: 'Dosis', sans-serif;
     padding: 0.5rem 1.5rem;
-
     cursor: pointer;
 }
 #btn, .btn{
@@ -243,8 +284,11 @@ export default {
 			.profilepic {
 				margin-left: 4rem;
 				img {
-					width: 12rem;
+					border: none;
 					border-radius: 50%;
+				
+					width: 10rem;
+					height: 10rem;
 					border: 5px solid #fff;
 					position: relative;
 					top: -70px;
@@ -254,6 +298,8 @@ export default {
 				margin-top: 0.3rem;
 
 				img {
+
+
 					display: flex;
 					width: 1.5rem;
 				}
@@ -343,45 +389,6 @@ export default {
 		width: 100%;
 		margin: auto;
 		justify-content: center;
-		.post {
-			position: relative;
-			&:after {
-				content: '';
-				position: absolute;
-				width: 95%;
-				height: 97%;
-				top: 0;
-				left: 0;
-				background: rgba(0, 0, 0, 0.5);
-				opacity: 0;
-				border-radius: $main-border-radius;
-				transition: all 0.5s;
-				-webkit-transition: all 0.5s;
-			}
-			&:hover:after {
-				opacity: 1;
-			}
-
-			.emoji-container {
-				position: absolute;
-				top: 42%;
-				left: 20%;
-				overflow: hidden;
-				opacity: 0;
-				transition: .4s;
-				z-index: 10;
-
-				a {
-					padding: 0 10px;
-					color: #fff;
-				}
-			}
-			&:hover {
-				.emoji-container {
-					opacity: 1;
-				}
-			}
-		}
 
 		.post4 {
 			margin-top: -80px;
