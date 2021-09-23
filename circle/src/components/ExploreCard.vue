@@ -1,26 +1,27 @@
 <template>
- 
+    
     <div class="post-container">
-        <a @click.prevent="detail(post.id)" href="#">
-        <div class="post"><a href=""><img :src="post.image_url" alt=""></a>
+    <a @click.prevent="detail(data.id)" href="#">
+        <div class="post"><a href=""><img :src="data.image_url" alt=""></a>
             <div class="emoji-container">
-                <a href="#" class="emoji"><i class="fa fa-heart"> {{post.favourites_count}}</i></a>
-
+                <a href="#" class="emoji"><i class="fa fa-heart"> {{data.favourites_count}}</i></a>
+                
             </div>
         </div>
+        <p >{{data.Profile.User.username}}</p>
+        
         </a>
     </div>
 </template>
 
 <script>
 export default {
-    name:"PostCard",
-    props: ["post"],
-    methods : {
+    name: "ExploreCard",
+    props: ['data'],
+    methods: {
         detail(id){
             this.$store.dispatch("fetchById", id)
             .then(({data})=> {
-                console.log(data);
                 this.$store.commit("SET_DETAILPAGE", data)
                 this.$router.push({
                     name: 'Detail',
@@ -28,11 +29,16 @@ export default {
                         id: id
                     }
                 })
+                if(data.Profile.profile_image_url){
+                    this.$store.commit("SET_HASPICTURE", true)
+                } else {
+                    this.$store.commit("SET_HASPICTURE", false)
+                }
             })
             .catch((err)=> {
                 console.log(err);
             })
-        }   
+        }
     }
 }
 </script>
@@ -91,4 +97,7 @@ export default {
 				}
 			}
 		}
+        p {
+            color: black
+        }
 </style>

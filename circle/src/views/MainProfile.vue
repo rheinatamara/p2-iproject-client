@@ -77,7 +77,8 @@ export default {
 	  hasPicture(){
 		  	return this.$store.state.hasPicture
 
-	  }
+	  },
+	  
     },
     created(){
       this.$store.dispatch('fetchProfile')
