@@ -14,11 +14,6 @@
                     <div class="form-container sign-in-container">
                         <form id="signInForm" @submit.prevent="submitLogin">
                             <h1 class="center">Sign in</h1>
-                                <div class="social-container center">
-                                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                                    <a href="#" class="social"><i class="fab fa-twitter"></i></a>
-                                </div>
                                 <span class="center">or use your account</span>
                                 <div class="form-input">
                                     <input v-model="usernameLogin" type="text" placeholder="Username" id="signInEmail"/>
@@ -33,11 +28,6 @@
                     <div class="form-container sign-up-container">
                         <form @submit.prevent="submitRegister">
                             <h1 class="center">Create an Account</h1>
-                            <div class="social-container center">
-                                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                                <a href="#" class="social"><i class="fab fa-twitter"></i></a>
-                            </div>
                             <span class="center">It's fast and free</span>
                             <div class="name">  
                                 <input type="text" v-model="fullNameRegister" placeholder="Full Name" id="signUpFirstName">

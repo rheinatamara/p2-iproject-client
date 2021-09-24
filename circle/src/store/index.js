@@ -69,6 +69,14 @@ export default new Vuex.Store({
         headers: { access_token: localStorage.getItem("access_token") },
       });
     },
+    editPost(context, payload) {
+      const form = new FormData();
+      form.append("description", payload.description);
+      form.append("profile_image_url", payload.profile_image_url);
+      axios.put(`${baseUrl}/myProfile`, form, {
+        headers: { access_token: localStorage.getItem("access_token") },
+      });
+    },
   },
   modules: {},
 });
